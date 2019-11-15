@@ -10,6 +10,7 @@ jobs:
     - uses: actions/checkout@v1
 
     - name: Dependencies
+      shell: bash
       run: |
         # Use a tag for reproducibility 
         git clone -b 2019.10 https://github.com/microsoft/vcpkg C:/vcpkg-gha
@@ -17,6 +18,7 @@ jobs:
         C:/vcpkg-gha/vcpkg.exe --triplet x64-windows protobuf boost-regex boost-system boost-thread
         
     - name: Configure, Compile and Install
+      shell: bash
       run: |
         mkdir -p build
         cd build
