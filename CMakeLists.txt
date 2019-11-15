@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.9)
 project(abb_libegm)
 
 set(${PROJECT_NAME}_MAJOR_VERSION 1)
@@ -66,11 +66,10 @@ target_include_directories(${PROJECT_NAME} PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include;${CMAKE_CURRENT_BINARY_DIR}>"
   $<INSTALL_INTERFACE:include>
   PUBLIC ${Boost_INCLUDE_DIRS}
-  PUBLIC ${Protobuf_INCLUDE_DIRS}
 )
 target_link_libraries(${PROJECT_NAME}
  ${Boost_LIBRARIES}
- ${Protobuf_LIBRARIES}
+ protobuf::libprotobuf
 )
 
 # Causes the visibility macros to use dllexport rather than dllimport,
