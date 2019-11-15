@@ -4,28 +4,24 @@ on: [push, pull_request]
 
 jobs:
   build:
-    name: '[${{ matrix.build_type }}]'
     runs-on: windows-latest
-    strategy:
-      matrix:
-        build_type: [Release, Debug]
     
     steps:
     - uses: actions/checkout@v1
 
     - name: Dependencies
       run: |
-        cd ${VCPKG_INSTALLATION_ROOT}
         # Use a tag for reproducibility 
-        git checkout 2019.10 
-        ./bootstrap-vcpkg.sh
-        vcpkg.exe --triplet x64-windows protobuf boost-regex boost-system boost-thread
+        git clone -b 2019.10 https://github.com/microsoft/vcpkg C:/vcpkg-gha
+        C:/vcpkg-gha/bootstrap-vcpkg.sh
+        C:/vcpkg-gha/vcpkg.exe --triplet x64-windows protobuf boost-regex boost-system boost-thread
         
     - name: Configure, Compile and Install
       run: |
         mkdir -p build
         cd build
-        cmake -A x64 -DCMAKE_TOOLCHAIN_FILE=${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake \
-              -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/install ..
-        cmake --build . --config ${{ matrix.build_type }} --target INSTALL
+        cmake -A x64 -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg-gha/scripts/buildsystems/vcpkg.cmake \ 
+              -DCMAKE_INSTALL_PREFIX=${GITHUB_WORKSPACE}/install ..
+        cmake --build . --config Debug --target INSTALL
+        cmake --build . --config Release --target INSTALL
       
