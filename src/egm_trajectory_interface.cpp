@@ -1149,7 +1149,7 @@ void EGMTrajectoryInterface::TrajectoryMotion::storeNormalGoal()
 bool EGMTrajectoryInterface::TrajectoryMotion::addTrajectory(const trajectory::TrajectoryGoal& trajectory,
                                                              const bool override_trajectories)
 {
-  boost::shared_ptr<EGMTrajectoryInterface::Trajectory> p_traj(new EGMTrajectoryInterface::Trajectory(trajectory));
+  std::shared_ptr<EGMTrajectoryInterface::Trajectory> p_traj(new EGMTrajectoryInterface::Trajectory(trajectory));
 
   std::lock_guard<std::mutex> data_lock(data_.mutex);
   std::lock_guard<std::mutex> trajectory_lock(trajectories_.mutex);
