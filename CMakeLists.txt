@@ -20,12 +20,14 @@ find_package(Boost REQUIRED COMPONENTS system thread regex)
 #############################
 ## Google Protocol Buffers ##
 #############################
-if(WIN32)
-  # The protobuf compiler appears to be default installed at ${_CMAKE_INSTALL_DIR}/tools/protobuf,
-  # and find_package() doesn't always seem to find it without specifying a hint.
-  find_package(Protobuf REQUIRED HINTS ${_CMAKE_INSTALL_DIR}/tools/protobuf)
-else()
-  find_package(Protobuf REQUIRED)
+if(NOT TARGET protobuf::libprotobuf)
+  if(WIN32)
+    # The protobuf compiler appears to be default installed at ${_CMAKE_INSTALL_DIR}/tools/protobuf,
+    # and find_package() doesn't always seem to find it without specifying a hint.
+    find_package(Protobuf REQUIRED HINTS ${_CMAKE_INSTALL_DIR}/tools/protobuf)
+  else()
+    find_package(Protobuf REQUIRED)
+  endif()
 endif()
 
 # Work around Protobuf exporting 'lpthread' as a library: we
