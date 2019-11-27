@@ -77,6 +77,9 @@ target_link_libraries(${PROJECT_NAME}
 # Causes the visibility macros to use dllexport rather than dllimport,
 # which is appropriate when building the dll but not consuming it.
 target_compile_definitions(${PROJECT_NAME} PRIVATE "ABB_LIBEGM_BUILDING_LIBRARY")
+# Use cxx_nullptr to force compilation with C++11 . 
+# when CMake >= 3.8 is required, cxx_std_11 feature can be used directly
+target_compile_definitions(${PROJECT_NAME} PRIVATE cxx_nullptr)
 
 #############
 ## Install ##
