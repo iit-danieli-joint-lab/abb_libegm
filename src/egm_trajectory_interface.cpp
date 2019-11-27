@@ -768,8 +768,8 @@ void EGMTrajectoryInterface::TrajectoryMotion::Controller::calculate(wrapper::Qu
 
 void EGMTrajectoryInterface::TrajectoryMotion::generateOutputs(Output* p_outputs, const InputContainer& inputs)
 {
-  boost::lock_guard<boost::mutex> data_lock(data_.mutex);
-  boost::lock_guard<boost::mutex> trajectory_lock(trajectories_.mutex);
+  std::lock_guard<std::mutex> data_lock(data_.mutex);
+  std::lock_guard<std::mutex> trajectory_lock(trajectories_.mutex);
 
   // Prepare for trajectory motion.
   prepare(inputs);
@@ -1151,8 +1151,8 @@ bool EGMTrajectoryInterface::TrajectoryMotion::addTrajectory(const trajectory::T
 {
   boost::shared_ptr<EGMTrajectoryInterface::Trajectory> p_traj(new EGMTrajectoryInterface::Trajectory(trajectory));
 
-  boost::lock_guard<boost::mutex> data_lock(data_.mutex);
-  boost::lock_guard<boost::mutex> trajectory_lock(trajectories_.mutex);
+  std::lock_guard<std::mutex> data_lock(data_.mutex);
+  std::lock_guard<std::mutex> trajectory_lock(trajectories_.mutex);
 
   bool accepted = state_manager_.verifyState(Normal, Running);
 
@@ -1185,7 +1185,7 @@ bool EGMTrajectoryInterface::TrajectoryMotion::addTrajectory(const trajectory::T
 
 bool EGMTrajectoryInterface::TrajectoryMotion::stopTrajectory(const bool discard_trajectories)
 {
-  boost::lock_guard<boost::mutex> lock(data_.mutex);
+  std::lock_guard<std::mutex> lock(data_.mutex);
 
   bool accepted = state_manager_.verifyState(Normal, Running);
 
@@ -1201,7 +1201,7 @@ bool EGMTrajectoryInterface::TrajectoryMotion::stopTrajectory(const bool discard
 
 bool EGMTrajectoryInterface::TrajectoryMotion::resumeTrajectory()
 {
-  boost::lock_guard<boost::mutex> lock(data_.mutex);
+  std::lock_guard<std::mutex> lock(data_.mutex);
 
   bool accepted = state_manager_.verifyState(RampDown, Finished);
 
@@ -1215,7 +1215,7 @@ bool EGMTrajectoryInterface::TrajectoryMotion::resumeTrajectory()
 
 bool EGMTrajectoryInterface::TrajectoryMotion::updateDurationFactor(double factor)
 {
-  boost::lock_guard<boost::mutex> lock(data_.mutex);
+  std::lock_guard<std::mutex> lock(data_.mutex);
 
   bool accepted = state_manager_.verifyState(Normal, Running);
 
@@ -1231,7 +1231,7 @@ bool EGMTrajectoryInterface::TrajectoryMotion::updateDurationFactor(double facto
 
 bool EGMTrajectoryInterface::TrajectoryMotion::startStaticGoal(const bool discard_trajectories)
 {
-  boost::lock_guard<boost::mutex> lock(data_.mutex);
+  std::lock_guard<std::mutex> lock(data_.mutex);
 
   bool accepted = state_manager_.verifyState(Normal, Running);
 
@@ -1249,7 +1249,7 @@ bool EGMTrajectoryInterface::TrajectoryMotion::startStaticGoal(const bool discar
 
 bool EGMTrajectoryInterface::TrajectoryMotion::setStaticGoal(const StaticPositionGoal& position_goal, const bool fast_transition)
 {
-  boost::lock_guard<boost::mutex> lock(data_.mutex);
+  std::lock_guard<std::mutex> lock(data_.mutex);
 
   bool accepted = state_manager_.verifyState(StaticGoal, Running);
 
@@ -1269,7 +1269,7 @@ bool EGMTrajectoryInterface::TrajectoryMotion::setStaticGoal(const StaticPositio
 
 bool EGMTrajectoryInterface::TrajectoryMotion::setStaticGoal(const StaticVelocityGoal& velocity_goal, const bool fast_transition)
 {
-  boost::lock_guard<boost::mutex> lock(data_.mutex);
+  std::lock_guard<std::mutex> lock(data_.mutex);
 
   bool accepted = state_manager_.verifyState(StaticGoal, Running);
 
@@ -1289,7 +1289,7 @@ bool EGMTrajectoryInterface::TrajectoryMotion::setStaticGoal(const StaticVelocit
 
 bool EGMTrajectoryInterface::TrajectoryMotion::finishStaticGoal(const bool resume)
 {
-  boost::lock_guard<boost::mutex> lock(data_.mutex);
+  std::lock_guard<std::mutex> lock(data_.mutex);
 
   bool accepted = state_manager_.verifyState(StaticGoal, Running);
 
@@ -1306,7 +1306,7 @@ bool EGMTrajectoryInterface::TrajectoryMotion::retrieveExecutionProgress(traject
 {
   bool result = false;
 
-  boost::lock_guard<boost::mutex> lock(data_.mutex);
+  std::lock_guard<std::mutex> lock(data_.mutex);
 
   if (data_.execution_progress.has_inputs())
   {
@@ -1398,7 +1398,7 @@ bool EGMTrajectoryInterface::initializeCallback(const UDPServerData& server_data
   // Update configurations, if requested to do so.
   if (success && inputs_.first_message())
   {
-    boost::lock_guard<boost::mutex> lock(configuration_.mutex);
+    std::lock_guard<std::mutex> lock(configuration_.mutex);
 
     if (configuration_.has_pending_update)
     {
@@ -1415,7 +1415,7 @@ bool EGMTrajectoryInterface::initializeCallback(const UDPServerData& server_data
     success = inputs_.extractParsedInformation(configuration_.active.base.axes);
     
     {
-      boost::lock_guard<boost::mutex> lock(session_data_.mutex);
+      std::lock_guard<std::mutex> lock(session_data_.mutex);
 
       // Update the session data.
       if (success)
@@ -1447,14 +1447,14 @@ bool EGMTrajectoryInterface::initializeCallback(const UDPServerData& server_data
 
 TrajectoryConfiguration EGMTrajectoryInterface::getConfiguration()
 {
-  boost::lock_guard<boost::mutex> lock(configuration_.mutex);
+  std::lock_guard<std::mutex> lock(configuration_.mutex);
 
   return configuration_.update;
 }
 
 void EGMTrajectoryInterface::setConfiguration(const TrajectoryConfiguration& configuration)
 {
-  boost::lock_guard<boost::mutex> lock(configuration_.mutex);
+  std::lock_guard<std::mutex> lock(configuration_.mutex);
 
   configuration_.update = configuration;
   configuration_.has_pending_update = true;

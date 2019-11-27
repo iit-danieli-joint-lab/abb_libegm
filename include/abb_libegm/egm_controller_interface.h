@@ -37,6 +37,8 @@
 #ifndef EGM_CONTROLLER_INTERFACE_H
 #define EGM_CONTROLLER_INTERFACE_H
 
+#include <condition_variable>
+
 #include "egm_base_interface.h"
 
 namespace abb
@@ -159,22 +161,22 @@ private:
     /**
      * \brief Mutex for protecting read data.
      */
-    boost::mutex read_mutex_;
+    std::mutex read_mutex_;
 
     /**
      * \brief Mutex for protecting write data.
      */
-    boost::mutex write_mutex_;
+    std::mutex write_mutex_;
     
     /**
      * \brief Condition variable for waiting on read data.
      */
-    boost::condition_variable read_condition_variable_;
+    std::condition_variable read_condition_variable_;
     
     /**
      * \brief Condition variable for waiting on write data.
      */
-    boost::condition_variable write_condition_variable_;
+    std::condition_variable write_condition_variable_;
 
     /**
      * \brief Flag indicating if read data is ready.

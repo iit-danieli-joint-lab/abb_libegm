@@ -153,7 +153,7 @@ private:
   /**
    * \brief The server's UDP socket.
    */
-  boost::shared_ptr<boost::asio::ip::udp::socket> p_socket_;
+  std::shared_ptr<boost::asio::ip::udp::socket> p_socket_;
 
   /**
    * \brief The address of the calling computer (e.g. an ABB robot controller or a virtual controller in RobotStudio).

@@ -15,7 +15,7 @@ endif()
 #########################
 ## Boost C++ Libraries ##
 #########################
-find_package(Boost REQUIRED COMPONENTS system thread regex)
+find_package(Boost REQUIRED COMPONENTS system)
 
 #############################
 ## Google Protocol Buffers ##

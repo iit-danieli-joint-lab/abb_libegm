@@ -55,8 +55,8 @@ void EGMControllerInterface::ControllerMotion::initialize(const bool first_messa
 {
   if (first_message)
   {
-    boost::lock_guard<boost::mutex> lock(read_mutex_);
-    boost::lock_guard<boost::mutex> lock2(write_mutex_);
+    std::lock_guard<std::mutex> lock(read_mutex_);
+    std::lock_guard<std::mutex> lock2(write_mutex_);
 
     read_data_ready_ = false;
     write_data_ready_ = false;
@@ -65,7 +65,7 @@ void EGMControllerInterface::ControllerMotion::initialize(const bool first_messa
 
 void EGMControllerInterface::ControllerMotion::writeInputs(const wrapper::Input& inputs)
 {
- boost::lock_guard<boost::mutex> lock(read_mutex_);
+ std::lock_guard<std::mutex> lock(read_mutex_);
 
  inputs_.CopyFrom(inputs);
  
@@ -77,11 +77,12 @@ void EGMControllerInterface::ControllerMotion::readOutputs(wrapper::Output* p_ou
 {
   bool timed_out = false;
 
-  boost::unique_lock<boost::mutex> lock(write_mutex_);
+  std::unique_lock<std::mutex> lock(write_mutex_);
 
   while (!write_data_ready_ && !timed_out)
   {
-    timed_out = !write_condition_variable_.timed_wait(lock, boost::posix_time::milliseconds(WRITE_TIMEOUT_MS));
+    std::cv_status status  = write_condition_variable_.wait_for(lock, std::chrono::milliseconds(WRITE_TIMEOUT_MS));
+    timed_out = (status == std::cv_status::timeout);
   }
 
   if (!timed_out && p_outputs)
@@ -93,7 +94,7 @@ void EGMControllerInterface::ControllerMotion::readOutputs(wrapper::Output* p_ou
 
 bool EGMControllerInterface::ControllerMotion::waitForMessage(const unsigned int timeout_ms)
 {
-  boost::unique_lock<boost::mutex> lock(read_mutex_);
+  std::unique_lock<std::mutex> lock(read_mutex_);
 
   bool timed_out = false;
 
@@ -105,7 +106,8 @@ bool EGMControllerInterface::ControllerMotion::waitForMessage(const unsigned int
     }
     else
     {
-      timed_out = !read_condition_variable_.timed_wait(lock, boost::posix_time::milliseconds(timeout_ms));
+      std::cv_status status  = write_condition_variable_.wait_for(lock, std::chrono::milliseconds(WRITE_TIMEOUT_MS));
+      timed_out = (status == std::cv_status::timeout);
     }
   }
 
@@ -114,7 +116,7 @@ bool EGMControllerInterface::ControllerMotion::waitForMessage(const unsigned int
 
 void EGMControllerInterface::ControllerMotion::readInputs(wrapper::Input* p_inputs)
 {
-  boost::lock_guard<boost::mutex> lock(read_mutex_);
+  std::lock_guard<std::mutex> lock(read_mutex_);
 
   p_inputs->CopyFrom(inputs_);
   read_data_ready_ = false;
@@ -122,7 +124,7 @@ void EGMControllerInterface::ControllerMotion::readInputs(wrapper::Input* p_inpu
 
 void EGMControllerInterface::ControllerMotion::writeOutputs(const wrapper::Output& outputs)
 {
-  boost::lock_guard<boost::mutex> lock(write_mutex_);
+  std::lock_guard<std::mutex> lock(write_mutex_);
 
   outputs_.CopyFrom(outputs);
 

@@ -37,7 +37,9 @@
 #define _USE_MATH_DEFINES
 
 #include <cmath>
+#include <chrono>
 #include <sstream>
+#include <thread>
 
 #include "abb_libegm/egm_base_interface.h"
 #include "abb_libegm/egm_common_auxiliary.h"
@@ -758,7 +760,7 @@ bool EGMBaseInterface::initializeCallback(const UDPServerData& server_data)
   // Update configuration, if requested to do so.
   if (success && inputs_.first_message())
   {
-    boost::lock_guard<boost::mutex> lock(configuration_.mutex);
+    std::lock_guard<std::mutex> lock(configuration_.mutex);
 
     if (configuration_.has_pending_update)
     {
@@ -773,7 +775,7 @@ bool EGMBaseInterface::initializeCallback(const UDPServerData& server_data)
     success = inputs_.extractParsedInformation(configuration_.active.axes);
 
     {
-      boost::lock_guard<boost::mutex> lock(session_data_.mutex);
+      std::lock_guard<std::mutex> lock(session_data_.mutex);
 
       // Update the session data.
       if (success)
@@ -814,14 +816,14 @@ bool EGMBaseInterface::isConnected()
   wrapper::Header header_2;
 
   {
-    boost::lock_guard<boost::mutex> lock(session_data_.mutex);
+    std::lock_guard<std::mutex> lock(session_data_.mutex);
     header_1.CopyFrom(session_data_.header);
   }
 
-  boost::this_thread::sleep(boost::posix_time::milliseconds(WAIT_TIME_MS));
+  std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME_MS));
 
   {
-    boost::lock_guard<boost::mutex> lock(session_data_.mutex);
+    std::lock_guard<std::mutex> lock(session_data_.mutex);
     header_2.CopyFrom(session_data_.header);
   }
 
@@ -843,7 +845,7 @@ wrapper::Status EGMBaseInterface::getStatus()
   wrapper::Status status;
 
   {
-    boost::lock_guard<boost::mutex> lock(session_data_.mutex);
+    std::lock_guard<std::mutex> lock(session_data_.mutex);
     status.CopyFrom(session_data_.status);
   }
 
@@ -852,14 +854,14 @@ wrapper::Status EGMBaseInterface::getStatus()
 
 BaseConfiguration EGMBaseInterface::getConfiguration()
 {
-  boost::lock_guard<boost::mutex> lock(configuration_.mutex);
+  std::lock_guard<std::mutex> lock(configuration_.mutex);
 
   return configuration_.update;
 }
 
 void EGMBaseInterface::setConfiguration(const BaseConfiguration& configuration)
 {
-  boost::lock_guard<boost::mutex> lock(configuration_.mutex);
+  std::lock_guard<std::mutex> lock(configuration_.mutex);
 
   configuration_.update = configuration;
   configuration_.has_pending_update = true;
