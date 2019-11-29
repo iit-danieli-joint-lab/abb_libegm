@@ -15,12 +15,14 @@ endif()
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 #########################
-## Boost C++ Libraries ##
+## Eigen C++ Library   ##
 #########################
-find_package(Boost REQUIRED COMPONENTS system)
+if(NOT TARGET Eigen3::Eigen)
+  find_package(Eigen3 REQUIRED)
+endif()
 
 ###################################
-## Asio Standalone C++ Libraries ##
+## Asio Standalone C++ Library   ##
 ###################################
 if(NOT TARGET Asio::Asio)
   find_package(Asio REQUIRED)
@@ -82,6 +84,7 @@ target_link_libraries(${PROJECT_NAME}
  ${Boost_LIBRARIES}
  protobuf::libprotobuf
  Asio::Asio
+ Eigen3::Eigen
 )
 
 # Causes the visibility macros to use dllexport rather than dllimport,

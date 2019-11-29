@@ -38,7 +38,7 @@
 
 #include <cmath>
 
-#include <boost/math/quaternion.hpp>
+#include <Eigen/Geometry>
 
 #include "abb_libegm/egm_common_auxiliary.h"
 
@@ -269,17 +269,22 @@ bool estimateVelocities(wrapper::Euler* p_estimate,
     // See for example https://en.wikipedia.org/wiki/Rotation_formalisms_in_three_dimensions for equations.
     // Note: Only valid for orientations, for the same object, at two points close in time.
     // Also assumes constant angular velocity between the points.
-    boost::math::quaternion<double> q1(previous.u0(), previous.u1(),
-                                       previous.u2(), previous.u3());
+    Eigen::Quaternion<double> q1(previous.u0(), previous.u1(),
+                                 previous.u2(), previous.u3());
     
-    boost::math::quaternion<double> q2(current.u0(), current.u1(),
+    Eigen::Quaternion<double> q2(current.u0(), current.u1(),
                                        current.u2(), current.u3());
 
-    boost::math::quaternion<double> estimation = ((2.0*(q2 - q1) / sample_time)*boost::math::conj(q1));
+    Eigen::Quaternion<double> term;
+    term.w() = 2.0*(q1.w()-q2.w())/sample_time;
+    term.x() = 2.0*(q1.x()-q2.x())/sample_time;
+    term.y() = 2.0*(q1.y()-q2.y())/sample_time;
+    term.z() = 2.0*(q1.z()-q2.z())/sample_time;
+    Eigen::Quaternion<double> estimation = term*q1.conjugate();
 
-    p_estimate->set_x(estimation.R_component_2()*Constants::Conversion::RAD_TO_DEG);
-    p_estimate->set_y(estimation.R_component_3()*Constants::Conversion::RAD_TO_DEG);
-    p_estimate->set_z(estimation.R_component_4()*Constants::Conversion::RAD_TO_DEG);
+    p_estimate->set_x(estimation.x()*Constants::Conversion::RAD_TO_DEG);
+    p_estimate->set_y(estimation.y()*Constants::Conversion::RAD_TO_DEG);
+    p_estimate->set_z(estimation.z()*Constants::Conversion::RAD_TO_DEG);
 
     success = true;
   }
