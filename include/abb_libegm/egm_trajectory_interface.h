@@ -64,11 +64,11 @@ public:
   /**
    * \brief A constructor.
    *
-   * \param io_service for operating boost asio's asynchronous functions.
+   * \param io_service for operating asio's asynchronous functions.
    * \param port_number for the server's UDP socket.
    * \param configuration for the interface's configuration.
    */
-  EGMTrajectoryInterface(boost::asio::io_service& io_service,
+  EGMTrajectoryInterface(asio::io_service& io_service,
                          const unsigned short port_number,
                          const TrajectoryConfiguration& configuration = TrajectoryConfiguration());
 

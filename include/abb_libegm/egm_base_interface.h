@@ -65,11 +65,11 @@ public:
   /**
    * \brief A constructor.
    *
-   * \param io_service for operating boost asio's asynchronous functions.
+   * \param io_service for operating asio's asynchronous functions.
    * \param port_number for the server's UDP socket.
    * \param configuration for the interface's configuration.
    */
-  EGMBaseInterface(boost::asio::io_service& io_service,
+  EGMBaseInterface(asio::io_service& io_service,
                    const unsigned short port_number,
                    const BaseConfiguration& configuration = BaseConfiguration());
   

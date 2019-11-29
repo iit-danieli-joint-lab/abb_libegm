@@ -37,7 +37,7 @@
 #ifndef EGM_UDP_SERVER_H
 #define EGM_UDP_SERVER_H
 
-#include <boost/asio.hpp>
+#include <asio.hpp>
 
 namespace abb
 {
@@ -105,11 +105,11 @@ public:
   /**
    * \brief A constructor.
    *
-   * \param io_service for operating boost asio's asynchronous functions.
+   * \param io_service for operatinggi asio's asynchronous functions.
    * \param port_number for the server's UDP socket.
    * \param p_interface that processes the received messages.
    */
-  UDPServer(boost::asio::io_service& io_service,
+  UDPServer(asio::io_service& io_service,
             unsigned short port_number,
             AbstractUDPServerInterface* p_interface);
 
@@ -135,7 +135,7 @@ private:
    * \param error for containing an error code.
    * \param bytes_transferred is the number of bytes received.
    */
-  void receiveCallback(const boost::system::error_code& error, const std::size_t bytes_transferred);
+  void receiveCallback(const asio::error_code& error, const std::size_t bytes_transferred);
 
   /**
    * \brief Callback for handling an asynchronous send.
@@ -143,7 +143,7 @@ private:
    * \param error for containing an error code.
    * \param bytes_transferred is the number of bytes transmitted.
    */
-  void sendCallback(const boost::system::error_code& error, const std::size_t bytes_transferred);
+  void sendCallback(const asio::error_code& error, const std::size_t bytes_transferred);
 
   /**
    * \brief Static constant for the socket's buffer size.
@@ -153,12 +153,12 @@ private:
   /**
    * \brief The server's UDP socket.
    */
-  std::shared_ptr<boost::asio::ip::udp::socket> p_socket_;
+  std::shared_ptr<asio::ip::udp::socket> p_socket_;
 
   /**
    * \brief The address of the calling computer (e.g. an ABB robot controller or a virtual controller in RobotStudio).
    */
-  boost::asio::ip::udp::endpoint remote_endpoint_;
+  asio::ip::udp::endpoint remote_endpoint_;
 
   /**
    * \brief A buffer for storing the server's serialized inbound messages (i.e. the robot's outbound messages).

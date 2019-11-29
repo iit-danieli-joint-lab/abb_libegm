@@ -12,10 +12,19 @@ if(WIN32)
   set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif()
 
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
 #########################
 ## Boost C++ Libraries ##
 #########################
 find_package(Boost REQUIRED COMPONENTS system)
+
+###################################
+## Asio Standalone C++ Libraries ##
+###################################
+if(NOT TARGET Asio::Asio)
+  find_package(Asio REQUIRED)
+endif()
 
 #############################
 ## Google Protocol Buffers ##
@@ -72,6 +81,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 target_link_libraries(${PROJECT_NAME}
  ${Boost_LIBRARIES}
  protobuf::libprotobuf
+ Asio::Asio
 )
 
 # Causes the visibility macros to use dllexport rather than dllimport,

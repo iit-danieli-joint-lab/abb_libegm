@@ -662,7 +662,7 @@ bool EGMBaseInterface::OutputContainer::constructCartesianBody(const BaseConfigu
  * Primary methods
  */
 
-EGMBaseInterface::EGMBaseInterface(boost::asio::io_service& io_service,
+EGMBaseInterface::EGMBaseInterface(asio::io_service& io_service,
                                    const unsigned short port_number,
                                    const BaseConfiguration& configuration)
 :
