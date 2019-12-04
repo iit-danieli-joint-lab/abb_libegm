@@ -41,22 +41,34 @@ if(NOT TARGET protobuf::libprotobuf)
   endif()
 endif()
 
+option(abb_libegm_CROSSCOMPILING "Enable if you are crosscompiling abb_libegm" OFF)
+
 # Work around Protobuf exporting 'lpthread' as a library: we
 # export the dependency on pthread using the configuration files.
 list(REMOVE_ITEM Protobuf_LIBRARIES "-lpthread")
 
 # Make sure protoc is present, as apparently the above find_package() doesn't check that.
-if(NOT Protobuf_PROTOC_EXECUTABLE)
+if(NOT Protobuf_PROTOC_EXECUTABLE AND NOT abb_libegm_CROSSCOMPILING)
   message(FATAL_ERROR "Cannot find required 'protoc', cannot process Protobuf files without it. Aborting.")
 endif()
 
-# Generate C++ for protocol classes (headers and sources
-# get written to the CMAKE_CURRENT_BINARY_DIR location).
-set(EgmProtoFiles proto/egm.proto proto/egm_wrapper.proto proto/egm_wrapper_trajectory.proto)
-if(NOT QUIET)
-  message(STATUS "Generating protobuf C++ for: ${EgmProtoFiles}")
+if(NOT abb_libegm_CROSSCOMPILING)
+  # Generate C++ for protocol classes (headers and sources
+  # get written to the CMAKE_CURRENT_BINARY_DIR location).
+  set(EgmProtoFiles proto/egm.proto proto/egm_wrapper.proto proto/egm_wrapper_trajectory.proto)
+  if(NOT QUIET)
+    message(STATUS "Generating protobuf C++ for: ${EgmProtoFiles}")
+  endif()
+  protobuf_generate_cpp(EgmProtoSources EgmProtoHeaders ${EgmProtoFiles})
+else()
+  # TODO: we are hardcoding the generate files for protobuf 3.10 for now)
+  # TODO: we should at least check that the protobuf library used is compatible
+  # TODO: even better, we should refactor CMake  script to permit to use an
+  # TODO: externally defined host's protoc
+  set(EgmProtoSources src_crosscompiling/egm.pb.cc
+                      src_crosscompiling/egm_wrapper.pb.cc
+                      src_crosscompiling/egm_wrapper_trajectory.pb.cc)
 endif()
-protobuf_generate_cpp(EgmProtoSources EgmProtoHeaders ${EgmProtoFiles})
 
 ###########
 ## Build ##
