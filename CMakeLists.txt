@@ -92,6 +92,12 @@ target_include_directories(${PROJECT_NAME} PUBLIC
   $<INSTALL_INTERFACE:include>
   PUBLIC ${Boost_INCLUDE_DIRS}
 )
+
+if(abb_libegm_CROSSCOMPILING)
+  target_include_directories(${PROJECT_NAME} PUBLIC
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src_crosscompiling;>")
+endif()
+
 target_link_libraries(${PROJECT_NAME}
  ${Boost_LIBRARIES}
  protobuf::libprotobuf
@@ -130,11 +136,13 @@ install(
 )
 
 # Export targets.
+if(NOT abb_libegm_CROSSCOMPILING)
 set(export_targets ${export_targets};${PROJECT_NAME})
 export(
   EXPORT export_${PROJECT_NAME}
   FILE "${PROJECT_BINARY_DIR}/export_${PROJECT_NAME}.cmake"
 )
+endif()
 
 # Create the ${PROJECT_NAME}Config.cmake.
 set(CONF_INCLUDE_DIRS "${CMAKE_INSTALL_PREFIX}/include")
@@ -155,6 +163,7 @@ configure_file(
   "${PROJECT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/${PROJECT_NAME}-extras.cmake" @ONLY
 )
 
+if(NOT abb_libegm_CROSSCOMPILING)
 install(
   FILES
     "${PROJECT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/${PROJECT_NAME}Config.cmake"
@@ -170,3 +179,4 @@ install(
   FILE export_${PROJECT_NAME}.cmake
   COMPONENT dev
 )
+endif()
