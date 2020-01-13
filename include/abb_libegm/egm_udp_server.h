@@ -37,7 +37,8 @@
 #ifndef EGM_UDP_SERVER_H
 #define EGM_UDP_SERVER_H
 
-#include <asio.hpp>
+#include <asio/io_service.hpp>
+#include <asio/ip/udp.hpp>
 
 namespace abb
 {
