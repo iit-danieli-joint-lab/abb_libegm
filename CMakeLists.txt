@@ -55,7 +55,7 @@ endif()
 if(NOT abb_libegm_CROSSCOMPILING)
   # Generate C++ for protocol classes (headers and sources
   # get written to the CMAKE_CURRENT_BINARY_DIR location).
-  set(EgmProtoFiles proto/egm.proto proto/egm_wrapper.proto proto/egm_wrapper_trajectory.proto)
+  set(EgmProtoFiles egm.proto egm_wrapper.proto egm_wrapper_trajectory.proto)
   if(NOT QUIET)
     message(STATUS "Generating protobuf C++ for: ${EgmProtoFiles}")
   endif()
