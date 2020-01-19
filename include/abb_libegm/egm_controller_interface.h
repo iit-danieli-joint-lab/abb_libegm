@@ -156,7 +156,7 @@ private:
     /**
      * \brief Static constant timeout [ms] for waiting on external control loop inputs.
      */
-    constexpr unsigned int WRITE_TIMEOUT_MS = 24;
+    static constexpr unsigned int WRITE_TIMEOUT_MS = 24;
 
     /**
      * \brief Mutex for protecting read data.
