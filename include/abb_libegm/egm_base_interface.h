@@ -455,7 +455,7 @@ protected:
    *
    * I.e. a connection between the interface's UDP server, and a robot controller's EGM client.
    */
-  constexpr unsigned int WAIT_TIME_MS = 100;
+  static constexpr unsigned int WAIT_TIME_MS = 100;
 
   /**
    * \brief Container for the inputs, to the interface, from the UDP server.
