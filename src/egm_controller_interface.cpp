@@ -109,7 +109,7 @@ bool EGMControllerInterface::ControllerMotion::waitForMessage(const unsigned int
     }
     else
     {
-      std::cv_status status  = write_condition_variable_.wait_for(lock, std::chrono::milliseconds(WRITE_TIMEOUT_MS));
+      std::cv_status status  = read_condition_variable_.wait_for(lock, std::chrono::milliseconds(timeout_ms));
       timed_out = (status == std::cv_status::timeout);
     }
   }
