@@ -830,6 +830,30 @@ bool parse(wrapper::CartesianPose* p_target, const EgmPose& source)
   return success;
 }
 
+bool parse(wrapper::TestSignals* p_target, const EgmTestSignals& source) {
+
+    bool success = true;
+
+    if (p_target)
+    {
+        p_target->Clear();
+
+        if (source.signals_size() == Constants::RobotController::DEFAULT_NUMBER_OF_ROBOT_JOINTS)
+        {
+            for (int i = 0; i < source.signals_size(); ++i)
+            {
+                p_target->add_signals(source.signals(i));
+            }
+        }
+        else
+        {
+            success = false;
+        }
+    }
+
+    return success;
+}
+
 bool parse(wrapper::Feedback* p_target, const EgmFeedBack& source, const RobotAxes axes)
 {
   bool success = false;

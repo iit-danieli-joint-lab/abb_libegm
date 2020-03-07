@@ -151,6 +151,11 @@ message CartesianSpace
   optional CartesianVelocity velocity = 2;
 }
 
+message TestSignals
+{
+  repeated double signals = 1;
+}
+
 //===========================================================
 //
 // Combined joint and Cartesian space auxiliary messages.
@@ -198,6 +203,7 @@ message Input
   optional Feedback feedback = 2;
   optional Planned  planned  = 3;
   optional Status   status   = 4;
+  optional TestSignals    testSignals = 5;
 }
 
 // Outputs to send to the robot controller.

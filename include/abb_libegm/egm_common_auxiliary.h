@@ -347,6 +347,16 @@ bool parse(wrapper::Joints* p_target_robot,
            const EgmJoints& source_robot,
            const EgmJoints& source_external,
            const RobotAxes axes);
+
+/**
+ * \brief Parse an abb::egm::EgmTestSignals object.
+ *
+ * \param p_target for containing the parsed data.
+ * \param source containing data to parse.
+ *
+ * \return bool indicating if the parsing was successful or not.
+ */
+bool parse(wrapper::TestSignals* p_target, const EgmTestSignals& source);
   
 /**
  * \brief Parse an abb::egm::EgmPose object.
